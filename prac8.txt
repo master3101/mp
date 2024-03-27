@@ -1,0 +1,37 @@
+-------------------------------------------- Practical 8 -----------------------------------------------
+
+-->Write an Android program to demonstrate the concept of Widgets in Flutter. 
+
+main.dart
+
+import 'package:flutter/material.dart';
+void main(){
+  runApp( const Myapp());
+}
+    class Myapp extends StatelessWidget {
+      const Myapp({Key? key}) : super(key: key);
+
+      @override
+      Widget build(BuildContext context) {
+        return MaterialApp(
+          home: Scaffold(
+            appBar: AppBar(title: const Text("login"),),
+                body: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+            children: const [
+               Text(
+                'Flutter practical',
+                style: TextStyle(fontWeight: FontWeight.bold,fontSize: 30),
+              ),
+              SizedBox(
+                height: 30,
+              ),
+              ElevatedButton(onPressed:null, child: Text('login',style:TextStyle(fontSize: 30),)
+              ),
+              Image(image: NetworkImage("https://images.unsplash.com/photo-1676446547562-613597f00cf7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=464&q=80"))
+      ],
+          ),
+          ),
+        );
+      }
+    }

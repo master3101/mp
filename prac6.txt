@@ -1,0 +1,115 @@
+-------------------------------------------- Practical 6 -----------------------------------------------
+
+--> Write an Android program to demonstrate the working of Internal Storage
+
+activity_main.xml
+
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <EditText
+        android:id="@+id/edtMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="100dp"
+        android:textSize="20dp"
+        android:hint="Enter Message"
+        android:minLines="5">
+    </EditText>
+    <Button
+        android:id="@+id/btnWrite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Write Text into File"
+        android:onClick="btnWrite"
+        android:textSize="20dp"
+        android:layout_centerInParent="true" />
+    <Button
+        android:id="@+id/btnRead"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Read Text From file"
+        android:onClick="btnRead"
+        android:textSize="20dp"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/btnWrite"/>
+    <TextView
+        android:id="@+id/tvOutput"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_below="@id/btnRead"
+        android:layout_marginTop="100dp"
+        android:textSize="20dp"
+        android:minLines="5"/>
+</RelativeLayout>
+
+mainactivity.kt
+
+package com.example.pr6
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+class MainActivity : AppCompatActivity() {
+    lateinit var edtMessage: EditText
+    lateinit var tvOutput: TextView
+    lateinit var btnWrite: Button
+    lateinit var btnRead: Button
+    private val READ_BLOCK_SIZE = 100
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+        edtMessage = findViewById(R.id.edtMessage)
+        tvOutput= findViewById(R.id.tvOutput)
+        btnWrite = findViewById(R.id.btnWrite)
+        btnRead = findViewById(R.id.btnRead)
+        btnWrite.setOnClickListener {
+            try {
+                val fileout = openFileOutput("file.txt", MODE_APPEND)
+                val outputWriter = OutputStreamWriter(fileout)
+                outputWriter.write(edtMessage!!.text.toString())
+                outputWriter.write(System.getProperty("line.separator"));
+                outputWriter.close()
+                Toast.makeText(this, "File saved successfully!!!",
+                    Toast.LENGTH_SHORT).show()
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+        btnRead.setOnClickListener {
+            try {
+                val fileIn = openFileInput("file.txt")
+                val inputRead = InputStreamReader(fileIn)
+                val inputBuffer = CharArray(READ_BLOCK_SIZE)
+                var s: String = ""
+                var charRead: Int
+                while (inputRead.read(inputBuffer).also { charRead = it } > 0) {
+                    val readstring = String(inputBuffer,0,charRead)
+                    s += readstring
+                }
+                if (s.isNullOrBlank())
+                {
+                    Toast.makeText(this, "First enter some data in the file!!!",
+                        Toast.LENGTH_SHORT).show()
+                }
+                else
+                {
+                    tvOutput.setText(s)
+                }
+                inputRead.close()
+                edtMessage.setText("")
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+}
+
